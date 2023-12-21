@@ -54,6 +54,7 @@ type test_o_win_expected = {
 	board: [["⭕", "❌", "  "], ["⭕", "❌", "  "], ["⭕", "  ", "❌"]]
 	state: "⭕ Won"
 }
+type test_o_win = Expect<Equal<test_o_win_actual, test_o_win_expected>>
 
 // invalid move don't change the board and state
 type test_invalid_actual = TicTacToe<test_move1_actual, "top-center">
