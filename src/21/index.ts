@@ -6,10 +6,10 @@ type TicTacToeCell = TicTacToeChip | TicTacToeEmptyCell
 type TicTacToeYPositions = "top" | "middle" | "bottom"
 type TicTacToeXPositions = "left" | "center" | "right"
 type TicTacToePositions = `${TicTacToeYPositions}-${TicTacToeXPositions}`
-type TicTactToeRow = [TicTacToeCell, TicTacToeCell, TicTacToeCell]
-type TicTactToeBoard = [TicTactToeRow, TicTactToeRow, TicTactToeRow]
+type TicTacToeRow = [TicTacToeCell, TicTacToeCell, TicTacToeCell]
+type TicTacToeBoard = [TicTacToeRow, TicTacToeRow, TicTacToeRow]
 type TicTacToeGame = {
-	board: TicTactToeBoard
+	board: TicTacToeBoard
 	state: TicTacToeState
 }
 
@@ -49,7 +49,7 @@ type SaveChange<
 > = T extends TicTacToeEmptyCell ? S : never
 
 type Change<
-	T extends TicTactToeRow,
+	T extends TicTacToeRow,
 	S extends PositionNumber,
 	R extends TicTacToeState
 > = R extends TicTacToeChip
@@ -67,7 +67,7 @@ type Change<
 	: never // "INVALID MOVE"
 
 type ChangeBoard<
-	T extends TicTactToeBoard,
+	T extends TicTacToeBoard,
 	S extends [PositionNumber, PositionNumber],
 	R extends TicTacToeState
 > = S[0] extends 0
@@ -111,7 +111,7 @@ type MakeMove<
 	? T
 	: ChangePlayer<ChangeGameAt<T, GetPosition<S>>>
 
-type AllSame<T extends TicTactToeRow, P extends TicTacToeChip> = T[0] extends P
+type AllSame<T extends TicTacToeRow, P extends TicTacToeChip> = T[0] extends P
 	? T[1] extends P
 		? T[2] extends P
 			? true
@@ -119,10 +119,10 @@ type AllSame<T extends TicTactToeRow, P extends TicTacToeChip> = T[0] extends P
 		: false
 	: false
 
-type HorizontalWin<
-	T extends TicTactToeBoard,
-	P extends TicTacToeChip
-> = AllSame<T[0], P> extends true
+type HorizontalWin<T extends TicTacToeBoard, P extends TicTacToeChip> = AllSame<
+	T[0],
+	P
+> extends true
 	? true
 	: AllSame<T[1], P> extends true
 	? true
@@ -130,28 +130,28 @@ type HorizontalWin<
 	? true
 	: false
 
-type Transpose<T extends TicTactToeBoard> = [
+type Transpose<T extends TicTacToeBoard> = [
 	[T[0][0], T[1][0], T[2][0]],
 	[T[0][1], T[1][1], T[2][1]],
 	[T[0][2], T[1][2], T[2][2]]
 ]
 
 type VerticalWin<
-	T extends TicTactToeBoard,
+	T extends TicTacToeBoard,
 	P extends TicTacToeChip
 > = HorizontalWin<Transpose<T>, P>
 
-type Diagonal1<T extends TicTactToeBoard> = [T[0][0], T[1][1], T[2][2]]
+type Diagonal1<T extends TicTacToeBoard> = [T[0][0], T[1][1], T[2][2]]
 
-type Diagonal2<T extends TicTactToeBoard> = Diagonal1<Transpose<T>>
+type Diagonal2<T extends TicTacToeBoard> = Diagonal1<Transpose<T>>
 
 type DiagonalWin<
-	T extends TicTactToeBoard,
+	T extends TicTacToeBoard,
 	P extends TicTacToeChip
 > = HorizontalWin<[Diagonal1<T>, Diagonal2<T>, Diagonal2<T>], P>
 
 type IsWinner<
-	T extends TicTactToeBoard,
+	T extends TicTacToeBoard,
 	P extends TicTacToeChip
 > = HorizontalWin<T, P> extends true
 	? true
@@ -162,7 +162,7 @@ type IsWinner<
 	: false
 
 type DoesNotExtend<
-	T extends TicTactToeRow,
+	T extends TicTacToeRow,
 	S extends TicTacToeCell
 > = T[0] extends S
 	? false
@@ -172,7 +172,7 @@ type DoesNotExtend<
 	? false
 	: true
 
-type IsDraw<T extends TicTactToeBoard> = DoesNotExtend<
+type IsDraw<T extends TicTacToeBoard> = DoesNotExtend<
 	T[0],
 	TicTacToeEmptyCell
 > extends true
@@ -183,7 +183,7 @@ type IsDraw<T extends TicTactToeBoard> = DoesNotExtend<
 		: false
 	: false
 
-type BoardWinner<T extends TicTactToeBoard> = IsWinner<T, "❌"> extends true
+type BoardWinner<T extends TicTacToeBoard> = IsWinner<T, "❌"> extends true
 	? "❌"
 	: IsWinner<T, "⭕"> extends true
 	? "⭕"
