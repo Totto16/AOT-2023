@@ -68,14 +68,10 @@ type IsNotTwiceIn<
 type IsValidFor<
 	T extends MyArray<Reindeer, 9>,
 	Left extends Reindeer[] = T
-> = Left extends [infer A1, ...infer A2]
-	? A1 extends Reindeer
-		? A2 extends Reindeer[]
-			? IsNotTwiceIn<A1, T> extends true
-				? IsValidFor<T, A2>
-				: false
-			: "TYPE ERROR in IsValidFor 2"
-		: "TYPE ERROR in IsValidFor 1"
+> = Left extends [infer A1 extends Reindeer, ...infer A2 extends Reindeer[]]
+	? IsNotTwiceIn<A1, T> extends true
+		? IsValidFor<T, A2>
+		: false
 	: Length<Left> extends 1
 	? IsNotTwiceIn<Left[0], T> extends true
 		? true
@@ -83,16 +79,12 @@ type IsValidFor<
 	: true // length is 0
 
 type IsValidForAll<T extends MyArray<Reindeer, 9>[]> = T extends [
-	infer A1,
-	...infer A2
+	infer A1 extends MyArray<Reindeer, 9>,
+	...infer A2 extends MyArray<Reindeer, 9>[]
 ]
-	? A1 extends MyArray<Reindeer, 9>
-		? A2 extends MyArray<Reindeer, 9>[]
-			? IsValidFor<A1> extends true
-				? IsValidForAll<A2>
-				: false
-			: "ERROR: internal type error 2"
-		: "ERROR: internal type error 1"
+	? IsValidFor<A1> extends true
+		? IsValidForAll<A2>
+		: false
 	: Length<T> extends 1
 	? IsValidFor<T[0]>
 	: true //length is 0
@@ -151,13 +143,9 @@ type GetAllRegionsHelper<B extends Board, T extends Row[]> = Length<T> extends 0
 	? []
 	: Length<T> extends 1
 	? [GetRegion<B, Modulo3<0>>]
-	: T extends [infer A1, ...infer A2]
-	? A1 extends Row
-		? A2 extends Row[]
-			? [GetRegion<B, Modulo3<Length<A2>>>, ...GetAllRegionsHelper<B, A2>]
-			: ["Type error 3 in: GetAllRegionsHelper"]
-		: ["Type error 2 in: GetAllRegionsHelper"]
-	: ["Type error 1 in: GetAllRegionsHelper"]
+	: T extends [infer A1 extends Row, ...infer A2 extends Row[]]
+	? [GetRegion<B, Modulo3<Length<A2>>>, ...GetAllRegionsHelper<B, A2>]
+	: ["Type error in: GetAllRegionsHelper"]
 
 type GetAllRegions<T extends Board> = ValidateResult<GetAllRegionsHelper<T, T>>
 
@@ -167,13 +155,9 @@ type GetAllRowsHelper<T extends Row[]> = Length<T> extends 0
 	? []
 	: Length<T> extends 1
 	? [GetRow<T[0]>]
-	: T extends [infer A1, ...infer A2]
-	? A1 extends Row
-		? A2 extends Row[]
-			? [GetRow<A1>, ...GetAllRowsHelper<A2>]
-			: ["Type error 3 in: GetAllRowsHelper"]
-		: ["Type error 2 in: GetAllRowsHelper"]
-	: ["Type error 1 in: GetAllRowsHelper"]
+	: T extends [infer A1 extends Row, ...infer A2 extends Row[]]
+	? [GetRow<A1>, ...GetAllRowsHelper<A2>]
+	: ["Type error in: GetAllRowsHelper"]
 
 type GetAllRows<T extends Board> = ValidateResult<GetAllRowsHelper<T>>
 
