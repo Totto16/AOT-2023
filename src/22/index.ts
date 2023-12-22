@@ -51,14 +51,12 @@ type IsNotTwiceIn<
 	T extends Reindeer,
 	S extends Reindeer[],
 	Cnt extends number = 0
-> = S extends [infer A1, ...infer A2]
-	? A2 extends Reindeer[]
-		? A1 extends T
-			? Cnt extends 1
-				? false
-				: IsNotTwiceIn<T, A2, 1>
-			: IsNotTwiceIn<T, A2, Cnt>
-		: "ERROR: type error in IsNotTwiceIn"
+> = S extends [infer A1, ...infer A2 extends Reindeer[]]
+	? A1 extends T
+		? Cnt extends 1
+			? false
+			: IsNotTwiceIn<T, A2, 1>
+		: IsNotTwiceIn<T, A2, Cnt>
 	: Length<S> extends 1
 	? S extends T
 		? Cnt extends 1
@@ -138,12 +136,11 @@ type Combine<
 	? []
 	: Length<First> extends 1
 	? [[First[0], Second[0]], [First[0], Second[1]], [First[0], Second[2]]]
-	: First extends [infer F1, ...infer F2]
-	? F1 extends Mod3Number
-		? F2 extends Mod3Number[]
-			? [...Combine<[F1], Second>, ...Combine<F2, Second>]
-			: never
-		: never
+	: First extends [
+			infer F1 extends Mod3Number,
+			...infer F2 extends Mod3Number[]
+	  ]
+	? [...Combine<[F1], Second>, ...Combine<F2, Second>]
 	: never
 
 type Module3Table = Combine<[0, 1, 2], [0, 1, 2]>
@@ -191,26 +188,20 @@ type GetColumn<
 			Num extends keyof R[0] ? R[0][Num] : never, // ERROR:
 			...GetColumn<T, Num, []>
 	  ]
-	: R extends [infer A1, ...infer A2]
-	? A2 extends Reindeer[][]
-		? [
-				Num extends keyof R[0] ? R[0][Num] : never, // ERROR:
-				...GetColumn<T, Num, A2>
-		  ]
-		: never // ERROR
+	: R extends [infer A1, ...infer A2 extends Reindeer[][]]
+	? [
+			Num extends keyof R[0] ? R[0][Num] : never, // ERROR:
+			...GetColumn<T, Num, A2>
+	  ]
 	: never // ERROR
 
 type GetAllColumnsHelper<B extends Board, T extends Row[]> = Length<T> extends 0
 	? []
 	: Length<T> extends 1
 	? [GetColumn<B, 0>]
-	: T extends [infer A1, ...infer A2]
-	? A1 extends Row
-		? A2 extends Row[]
-			? [GetColumn<B, Length<A2>>, ...GetAllColumnsHelper<B, A2>]
-			: ["Type error 3 in: GetAllColumnsHelper"]
-		: ["Type error 2 in: GetAllColumnsHelper"]
-	: ["Type error 1 in: GetAllColumnsHelper"]
+	: T extends [infer A1 extends Row, ...infer A2 extends Row[]]
+	? [GetColumn<B, Length<A2>>, ...GetAllColumnsHelper<B, A2>]
+	: ["Type error in: GetAllColumnsHelper"]
 
 type GetAllColumns<T extends Board> = ValidateResult<GetAllColumnsHelper<T, T>>
 
