@@ -33,12 +33,8 @@ type GetPositionY<S extends TicTacToeYPositions> = S extends "top"
 	: 2
 
 type GetPosition<S extends TicTacToePositions> =
-	S extends `${infer Y}-${infer X}`
-		? X extends TicTacToeXPositions
-			? Y extends TicTacToeYPositions
-				? [GetPositionY<Y>, GetPositionX<X>]
-				: never
-			: never
+	S extends `${infer Y extends TicTacToeYPositions}-${infer X extends TicTacToeXPositions}`
+		? [GetPositionY<Y>, GetPositionX<X>]
 		: never
 
 type PositionNumber = 0 | 1 | 2
