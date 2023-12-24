@@ -13,20 +13,14 @@ type FindSanta1<T extends any[]> = GetAmount<T> extends unknown[]
 	: never
 
 type FindSantaAll<T extends any[][], S extends any[] = []> = T extends [
-	infer A1,
-	...infer A2
+	infer A1 extends any[],
+	...infer A2 extends any[][]
 ]
-	? A1 extends any[]
-		? A2 extends any[][]
-			? FindSanta1<A1> extends never
-				? FindSantaAll<A2, Succ<S>>
-				: Length<S>
-			: never
-		: never
-	: T extends [infer A1]
-	? A1 extends any[]
-		? FindSanta1<A1>
-		: never
+	? FindSanta1<A1> extends never
+		? FindSantaAll<A2, Succ<S>>
+		: Length<S>
+	: T extends [infer A1 extends any[]]
+	? FindSanta1<A1>
 	: never
 
 type FindAll<S extends any[][], T extends number | never> = T extends never
