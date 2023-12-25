@@ -9,6 +9,6 @@ This are the puzzles from [typehero](https://typehero.dev/aot-2023) for Advent O
 
 ## Disclaimer
 
-These Solutions work witt the given tests, I don#t ensure full correctness of all of them :)
+These Solutions work with the given tests, I tried to catch every case, described in the task, but I don't ensure full correctness of all of them :)
 
-Teh full copyright of the puzzles go to [typehero](https://github.com/typehero/typehero)
+The full copyright of the puzzles go to [typehero](https://github.com/typehero/typehero)
